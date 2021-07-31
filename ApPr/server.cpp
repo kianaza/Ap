@@ -1,5 +1,7 @@
 #include "/home/kianaz/Documents/ApPr/httplib.h"
 
+
+
 int main(void)
 {
   using namespace httplib;
@@ -9,7 +11,6 @@ int main(void)
   svr.Get("/hi", [](const Request& req, Response& res) {
     res.set_content("Hello World!", "text/plain");
   });
-
   svr.Get("/stop", [&](const Request& req, Response& res) {
     svr.stop();
   });
