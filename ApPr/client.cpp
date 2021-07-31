@@ -1,12 +1,20 @@
-#define CPPHTTPLIB_OPENSSL_SUPPORT
+
+#include <iostream>
 #include "/home/kianaz/Documents/ApPr/httplib.h"
-
-// HTTP
-httplib::Client cli("http://cpp-httplib-server.yhirose.repl.co");
-
-// HTTPS
-httplib::Client cli("https://cpp-httplib-server.yhirose.repl.co");
-
-auto res = cli.Get("/hi");
-res->status;
-res->body;
+using namespace std;
+int main(void)
+{
+    
+httplib::Client cli("localhost", 8080);
+cout<<"hi"<<endl;
+if (auto res= cli.Get("/hi")){
+    cout<<"hi"<<endl;
+    if(res->status == 200) {
+        cout<<"hi"<<endl;
+        cout << res->body <<endl;
+    }
+}
+// auto res = cli.Get("/hi");
+// res->status;
+// res->body;
+}
