@@ -14,7 +14,7 @@ map<int, int>tokens;
 
 int player_mark[Maxn][Maxn],player_cnt= 1;
 int wall_mark[Maxn][Maxn];
-bool start_mark;
+bool start_mark,winner_mark,winner_mark_show;
 int turn = 0;
 bool vertical_wall[Maxn][Maxn],horizontal_wall[Maxn][Maxn];
 
@@ -60,6 +60,11 @@ struct Player {
         player_mark[x][y]=cnt;
         return true;
     }
+    bool win(){
+        if(x==5 && y==5)
+            return true;
+        return false;
+    }
 };
 
 vector <Player*> players;
@@ -67,7 +72,12 @@ vector <Player*> players;
 // done
 string show(){
     stringstream output;
-
+    if(winner_mark_show){
+        output<<"!!! Bazi be payan resid !!!";
+        return output.str();
+    }
+    if(winner_mark)
+        winner_mark_show=true;
     output<<"   ";
     for(int i=0;i<10;i++){
         output<<"  "<<i<<" ";
@@ -164,7 +174,11 @@ string move(string s, int p){
         valid= valid & players[p-1]->move_right();
     else
         valid =false;
-
+    if(winner_mark ||  players[p-1]->win()){
+        output<<"!!! bazi be payan resid !!!"<<"\n";
+        winner_mark=true;
+        return output.str();
+    }
     if(valid) {
         turn= (turn+1) % (player_cnt-1);
         return show();
@@ -206,7 +220,10 @@ string wall(int x, int y, int p, string d){
     }
     else 
         output<<"harekat valid nist",valid=false;
-    
+    if(winner_mark){
+        output<<"harekat valid nemibashad"<<"\n";
+        return output.str();
+    }
     if(valid) {
         turn = (turn+1) % (player_cnt-1);
         return show();
@@ -231,7 +248,7 @@ int main(){
         if (fnResponse[0] == '+') {
             fnResponse = fnResponse.substr(1);
             int p = stoi(fnResponse);
-            int token = (rand() * rand() * 8569) * (rand() * rand());
+            int token = (rand() * rand() * 2973) * (rand() * rand());
             if(token<0) token = -token;
             tokens[token]=p;
             res.set_content(to_string(p) + ":" + to_string(token), "text/plain");
@@ -249,18 +266,24 @@ int main(){
     svr.Post("/wall", [](const httplib::Request &req, httplib::Response &res) {
         stringstream input(req.body);
         int x, y, p;
-        string d;
+        string d, fnResponse;
         input >> p >> x >> y >> d;
-        string fnResponse = wall(x, y, tokens[p], d);
+        if(tokens.find(p) == tokens.end())
+            fnResponse = "token shoma yaft nashod";
+        else 
+            fnResponse = wall(x, y, tokens[p], d);
         res.set_content(fnResponse, "text/plain");
     });
 
     svr.Post("/move", [](const httplib::Request &req, httplib::Response &res) {
         stringstream input(req.body);
         int p;
-        string s;
+        string s,fnResponse;
         input >> p >> s;
-        string fnResponse = move(s, tokens[p]);
+        if(tokens.find(p) == tokens.end())
+            fnResponse = "token shoma yaft nashod";
+        else 
+            fnResponse = move(s, tokens[p]);
         res.set_content(fnResponse, "text/plain");
     });
 
