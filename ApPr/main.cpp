@@ -69,7 +69,7 @@ void show(){
         }
         cout<<"\n";
         if(i!=10) cout<<i<<"  ";
-        for(int j=0;j<10;j++){
+        for(int j=0;j<11;j++){
             if(horizontal_wall[i][j])
                 cout<<"-";
             else
@@ -135,6 +135,7 @@ void move(){
     else if(s == "right")
         valid= valid & players[p-1]->move_right();
     else
+
         valid =false;
     if(valid)
         turn= (turn+1) % (player_cnt-1),show() ;
@@ -174,6 +175,7 @@ void wall(){
     if(valid)
         turn= (turn+1) % (player_cnt-1),show();
 }
+
 int main(){
     while(true){
         string func;
